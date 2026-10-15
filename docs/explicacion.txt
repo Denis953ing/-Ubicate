@@ -1,0 +1,8 @@
+Ubicate es una idea para ayudar a los estudiantes a encontrar aulas
+
+La carpeta presentation tiene la pagina
+La carpeta business revisa la busqueda
+La carpeta data busca los datos en MySQL
+
+El archivo database.sql crea las tablas de ejemplo
+Los datos son de prueba y hay que cambiarlos por datos reales
