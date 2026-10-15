@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Ubicate</title>
+</head>
+<body>
+  <h1>Ubicate</h1>
+  <p>Busca una materia para ver el aula y el horario</p>
+  <form>
+    <input name="materia" placeholder="Nombre de la materia" value="{{ texto }}">
+    <button>Buscar</button>
+  </form>
+  {% if resultados %}
+    <h2>Resultados</h2>
+    {% for r in resultados %}
+      <p>Materia: {{ r[0] }} | Aula: {{ r[1] }} | Pabellon: {{ r[2] }} | Dia: {{ r[3] }} | Hora: {{ r[4] }}</p>
+    {% endfor %}
+  {% elif texto %}
+    <p>No se encontraron resultados</p>
+  {% endif %}
+</body>
+</html>
