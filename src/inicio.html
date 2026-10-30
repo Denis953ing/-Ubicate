@@ -1,23 +1,98 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <title>Ubicate</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Ubícate! | Universidad</title>
 </head>
 <body>
-  <h1>Ubicate</h1>
-  <p>Busca una materia para ver el aula y el horario</p>
-  <form>
-    <input name="materia" placeholder="Nombre de la materia" value="{{ texto }}">
-    <button>Buscar</button>
-  </form>
-  {% if resultados %}
-    <h2>Resultados</h2>
-    {% for r in resultados %}
-      <p>Materia: {{ r[0] }} | Aula: {{ r[1] }} | Pabellon: {{ r[2] }} | Dia: {{ r[3] }} | Hora: {{ r[4] }}</p>
-    {% endfor %}
-  {% elif texto %}
-    <p>No se encontraron resultados</p>
-  {% endif %}
+
+    <h1>¡Ubícate!</h1>
+
+    <h2>Buscar una materia</h2>
+    <p>Consulta el aula, el pabellón y el horario de tus clases.</p>
+
+    <form action="/" method="GET">
+        <input
+            type="text"
+            name="materia"
+            placeholder="Nombre de la materia"
+            value="{{ texto }}"
+        >
+        <button type="submit">Buscar</button>
+    </form>
+
+    {% if resultados %}
+        <h2>Resultados de búsqueda</h2>
+
+        {% for r in resultados %}
+            <p>
+                <strong>Materia:</strong> {{ r[0] }} |
+                <strong>Aula:</strong> {{ r[1] }} |
+                <strong>Pabellón:</strong> {{ r[2] }} |
+                <strong>Día:</strong> {{ r[3] }} |
+                <strong>Hora:</strong> {{ r[4] }}
+            </p>
+        {% endfor %}
+
+    {% elif texto %}
+        <p>No se encontraron resultados.</p>
+    {% endif %}
+
+    <hr>
+
+    <h2>Registrar una materia nueva</h2>
+    <p>Completa el campo para agregar una materia al sistema.</p>
+
+    <form action="/" method="POST">
+        <input type="hidden" name="accion" value="registrar_materia">
+
+        <label for="nombre">Nombre de la materia:</label>
+        <input
+            type="text"
+            id="nombre"
+            name="nombre"
+            placeholder="Ej. Programación Estructurada"
+            required
+            maxlength="100"
+        >
+
+        <button type="submit">Registrar materia</button>
+    </form>
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% if mensajes %}
+            {% for categoria, mensaje in mensajes %}
+                <p><strong>{{ mensaje }}</strong></p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+<hr>
+
+<h2>Materias registradas</h2>
+<p>Consulta las materias que están guardadas en el sistema.</p>
+
+{% if materias %}
+<table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre de la materia</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for materia in materias %}
+        <tr>
+            <td>{{ materia[0] }}</td>
+            <td>{{ materia[1] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Aún no hay materias registradas.</p>
+{% endif %}
+
 </body>
 </html>

@@ -1,4 +1,4 @@
-from src.data.datos import buscar_materia
+from src.datos import buscar_materia
 
 def buscar(texto):
     texto = texto.strip()
