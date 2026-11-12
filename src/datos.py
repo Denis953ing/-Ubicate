@@ -1,4 +1,5 @@
 import os
+
 import mysql.connector
 from dotenv import load_dotenv
 
@@ -60,6 +61,27 @@ def listar_materias():
         conexion.close()
 
 
+def listar_aulas():
+    """Devuelve las aulas y el nombre de su pabellón."""
+    conexion = obtener_conexion()
+    cursor = conexion.cursor()
+
+    try:
+        consulta = """
+            SELECT aulas.id, aulas.nombre, pabellones.nombre
+            FROM aulas
+            LEFT JOIN pabellones
+                ON pabellones.id = aulas.pabellon_id
+            ORDER BY aulas.nombre
+        """
+        cursor.execute(consulta)
+        return cursor.fetchall()
+
+    finally:
+        cursor.close()
+        conexion.close()
+
+
 def registrar_materia(nombre):
     """Registra una materia nueva y evita duplicados."""
     nombre = nombre.strip()
@@ -71,7 +93,6 @@ def registrar_materia(nombre):
     cursor = conexion.cursor()
 
     try:
-        # Comprobar si la materia ya existe
         cursor.execute(
             "SELECT id FROM materias WHERE LOWER(nombre) = LOWER(%s)",
             (nombre,)
@@ -80,7 +101,6 @@ def registrar_materia(nombre):
         if cursor.fetchone():
             raise ValueError("Esta materia ya está registrada.")
 
-        # Registrar la materia si no existe
         cursor.execute(
             "INSERT INTO materias (nombre) VALUES (%s)",
             (nombre,)
@@ -95,3 +115,48 @@ def registrar_materia(nombre):
     finally:
         cursor.close()
         conexion.close()
+
+
+def materia_existe_en_conexion(conexion, nombre):
+    """Comprueba si una materia ya existe usando una conexión activa."""
+    cursor = conexion.cursor()
+
+    try:
+        cursor.execute(
+            "SELECT id FROM materias WHERE LOWER(nombre) = LOWER(%s)",
+            (nombre,)
+        )
+        return cursor.fetchone() is not None
+
+    finally:
+        cursor.close()
+
+
+def crear_materia_en_conexion(conexion, nombre):
+    """Inserta la materia sin confirmar la transacción."""
+    cursor = conexion.cursor()
+
+    try:
+        cursor.execute(
+            "INSERT INTO materias (nombre) VALUES (%s)",
+            (nombre,)
+        )
+        return cursor.lastrowid
+
+    finally:
+        cursor.close()
+
+
+def crear_horario_en_conexion(conexion, materia_id, aula_id, dia, hora):
+    """Inserta un horario sin confirmar la transacción."""
+    cursor = conexion.cursor()
+
+    try:
+        consulta = """
+            INSERT INTO horarios (materia_id, aula_id, dia, hora)
+            VALUES (%s, %s, %s, %s)
+        """
+        cursor.execute(consulta, (materia_id, aula_id, dia, hora))
+
+    finally:
+        cursor.close()

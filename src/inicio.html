@@ -60,6 +60,53 @@
         <button type="submit">Registrar materia</button>
     </form>
 
+    <hr>
+
+    <h2>Registrar una materia con varios horarios</h2>
+    <p>
+        Esta opción registra la materia y sus horarios en una sola operación.
+        Si ocurre un error, se cancelan todos los cambios.
+    </p>
+
+    <form action="/" method="POST">
+        <input
+            type="hidden"
+            name="accion"
+            value="registrar_materia_horarios"
+        >
+
+        <label for="nombre_transaccion">Nombre de la materia:</label>
+        <input
+            type="text"
+            id="nombre_transaccion"
+            name="nombre_transaccion"
+            maxlength="100"
+            required
+        >
+
+        {% for numero in range(1, 4) %}
+            <h3>Horario {{ numero }}</h3>
+
+            <label>Día:</label>
+            <input type="text" name="dia[]" placeholder="Ej. Lunes">
+
+            <label>Hora:</label>
+            <input type="text" name="hora[]" placeholder="Ej. 8:00">
+
+            <label>Aula:</label>
+            <select name="aula_id[]">
+                <option value="">Seleccione un aula</option>
+                {% for aula in aulas %}
+                    <option value="{{ aula[0] }}">
+                        {{ aula[1] }}{% if aula[2] %} - {{ aula[2] }}{% endif %}
+                    </option>
+                {% endfor %}
+            </select>
+        {% endfor %}
+
+        <button type="submit">Registrar materia y horarios</button>
+    </form>
+
     {% with mensajes = get_flashed_messages(with_categories=true) %}
         {% if mensajes %}
             {% for categoria, mensaje in mensajes %}
@@ -68,31 +115,31 @@
         {% endif %}
     {% endwith %}
 
-<hr>
+    <hr>
 
-<h2>Materias registradas</h2>
-<p>Consulta las materias que están guardadas en el sistema.</p>
+    <h2>Materias registradas</h2>
+    <p>Consulta las materias que están guardadas en el sistema.</p>
 
-{% if materias %}
-<table border="1" cellpadding="8" cellspacing="0">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre de la materia</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for materia in materias %}
-        <tr>
-            <td>{{ materia[0] }}</td>
-            <td>{{ materia[1] }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p>Aún no hay materias registradas.</p>
-{% endif %}
+    {% if materias %}
+    <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre de la materia</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for materia in materias %}
+            <tr>
+                <td>{{ materia[0] }}</td>
+                <td>{{ materia[1] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Aún no hay materias registradas.</p>
+    {% endif %}
 
 </body>
 </html>
